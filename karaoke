@@ -18,4 +18,5 @@ curl -s https://lirik.kapanlagi.com/artis/$artis/$judul/\
     | sed "s/â€™/\'/g"
 echo ""
 
-mpv --no-video ytdl://ytsearch:$(echo $titel)
+youtube=$(echo $1 $2)
+mpv --no-video ytdl://ytsearch:"$(echo $youtube)"
