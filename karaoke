@@ -1,0 +1,21 @@
+#!/bin/bash
+artis=$(echo $1 | sed 's/ /-/g')
+judul=$(echo $2 | sed 's/ /-/g')
+# mpsyt /$artis $judul,1,a
+echo ""
+titel=$(echo ' ' $2 | tr a-z A-Z)
+figlet -f Mini $titel
+echo "  Penyayi: "$1 | tr a-z A-Z
+echo ""
+curl -s https://lirik.kapanlagi.com/artis/$artis/$judul/\
+    | pup '.col-lirik'  \
+    | pup 'json{}'  \
+    | sed 's/"tag": "br"/"text":\""/g'  \
+    | jq '.[]?.children[]?.children[1]?.children[0]?.children[].text'\
+    | sed  "s/&#39;/\'/g"   \
+    | sed '/null/d' \
+    | sed s/\"/\ \ \/g      \
+    | sed "s/â€™/\'/g"
+echo ""
+
+mpv --no-video ytdl://ytsearch:$(echo $titel)
