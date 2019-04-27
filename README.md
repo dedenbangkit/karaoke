@@ -1,6 +1,6 @@
 # KARAOKE
 
-Singing the right way.
+Singing the programmer way.
 
 ## Dependency
 
@@ -25,7 +25,7 @@ cp karaoke /usr/local/bin/
 
 ## Usage
 ```
-$ karaoke "Chrisye Merepih Alam" 
+$ karaoke "Chrisye" "Merepih Alam" 
        _  _   _  _ ___
  |\/| |_ |_) |_ |_) |  |_|    /\  |   /\  |\/|
  |  | |_ | \ |_ |  _|_ | |   /--\ |_ /--\ |  |
