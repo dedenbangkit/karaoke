@@ -4,8 +4,8 @@ judul=$(echo $2 | sed 's/ /-/g')
 # mpsyt /$artis $judul,1,a
 echo ""
 titel=$(echo ' ' $2 | tr a-z A-Z)
-figlet -f Mini $titel
-echo "  Penyayi: "$1 | tr a-z A-Z
+figlet -f Mini $titel | lolcat
+echo "  Penyayi: "$1 | tr a-z A-Z | lolcat
 echo ""
 curl -s https://lirik.kapanlagi.com/artis/$artis/$judul/\
     | pup '.col-lirik'  \
@@ -15,7 +15,8 @@ curl -s https://lirik.kapanlagi.com/artis/$artis/$judul/\
     | sed  "s/&#39;/\'/g"   \
     | sed '/null/d' \
     | sed s/\"/\ \ \/g      \
-    | sed "s/â€™/\'/g"
+    | sed /.video/d  \
+    | sed "s/â€™/\'/g" | lolcat
 echo ""
 
 youtube=$(echo $1 $2)
