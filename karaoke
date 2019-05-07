@@ -1,23 +1,42 @@
 #!/bin/bash
-artis=$(echo $1 | sed 's/ /-/g')
-judul=$(echo $2 | sed 's/ /-/g')
-# mpsyt /$artis $judul,1,a
-echo ""
-titel=$(echo ' ' $2 | tr a-z A-Z)
-figlet -f Mini $titel | lolcat
-echo "  Penyayi: "$1 | tr a-z A-Z | lolcat
-echo ""
-curl -s https://lirik.kapanlagi.com/artis/$artis/$judul/\
-    | pup '.col-lirik'  \
-    | pup 'json{}'  \
-    | sed 's/"tag": "br"/"text":\""/g'  \
-    | jq '.[]?.children[]?.children[1]?.children[0]?.children[].text'\
-    | sed  "s/&#39;/\'/g"   \
-    | sed '/null/d' \
-    | sed s/\"/\ \ \/g      \
-    | sed /.video/d  \
-    | sed "s/â€™/\'/g" | lolcat
-echo ""
+keywords=$(echo $* | sed 's/\ /%20/g')
+search='https://www.lyricsfreak.com/search.php?q='$keywords
+link=$(curl -s $search | pup '.lf-list__row json{}' \
+    | jq '.[]? | select(has("data-sorting-artist"))' \
+    | jq '.children[1].children[]'\
+    | jq '.href' \
+    | sed s/\"//g \
+    | sed 's/.html//g' \
+    | sed 's/_/\ #\ /g' \
+    | sed 's/\//\ |\ /g' \
+    | sed 's/+/\ /g' | tr a-z A-Z | pick \
+    | sed 's/\ |\ /\//g' \
+    | sed 's/\ #\ /_/g' \
+    | sed 's/$/.html/' \
+    | sed 's/^/https\:\/\/www.lyricsfreak.com/' \
+    | sed 's/\ /+/g' | tr A-Z a-z)
+youtube=$(echo $link \
+    | sed 's/\/\///g' \
+    | sed 's/\://g' \
+    | sed 's/httpswww.lyricsfreak.com//g'\
+    | sed 's/.html//g'\
+    | sed 's/+/\ /g'\
+    | sed 's/\_[^,]*//g'\
+    | sed 's/^.\{3\}//'\
+    | sed 's/\// -\ /g'
+    )
+echo '----------------------------------'
+echo $youtube | tr a-z A-Z | lolcat
+echo '----------------------------------\n'
+curl -s $link | pup '#content' | tail -n +2 \
+    | sed 'N;s/<br>/ /' \
+    | sed 's/<br>/ /' \
+    | sed 'N;s/\n/ /' \
+    | sed 's/^ *//g' \
+    | sed 's/&amp;/\&/g' \
+    | sed "s/\&\#39\;/\'/g" \
+    | sed 's/Ã­/í/g' \
+    | sed 's/Ã³/ó/g' \
+    | sed 's/Ã¡/á/g' | lolcat
 
-youtube=$(echo $1 $2)
 mpv --no-video ytdl://ytsearch:"$(echo $youtube)"
